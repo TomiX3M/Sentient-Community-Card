@@ -10,24 +10,39 @@ const getAgiGradient = (agiLevel) => {
     'Early AGI': 'bg-gradient-to-r from-green-400 to-emerald-600',
     'Advanced AGI': 'bg-gradient-to-r from-purple-400 to-indigo-600',
     'Sentient AGI': 'bg-gradient-to-r from-yellow-300 to-amber-500',
-    'L1': 'bg-gradient-to-r from-gray-200 to-white',
-    'L2': 'bg-gradient-to-r from-gray-300 via-white to-gray-200',
-    'L3': 'bg-gradient-to-r from-gray-400 via-white to-gray-300',
+    'Level 1': 'bg-gradient-to-r from-gray-200 to-white',
+    'Level 2': 'bg-gradient-to-r from-gray-300 via-white to-gray-200',
+    'Level 3': 'bg-gradient-to-r from-gray-400 via-white to-gray-300',
   };
   return gradients[agiLevel] || 'bg-gradient-to-r from-gray-400 to-gray-600';
 };
 
-const getAgiLevel = (role) => {
-  const agiMapping = {
-    'Level 1': 'Early AGI',
-    'Level 2': 'Advanced AGI',
-    'Level 3': 'Sentient AGI',
-    'Early AGI': 'Early AGI',
-    'Advanced AGI': 'Advanced AGI',
-    'Sentient AGI': 'Sentient AGI'
-  };
-  return agiMapping[role] || 'Sentient AGI';
+const getAgiLevel = (roleLevel) => {
+  const agiLevels = [
+    'Level 1',
+    'Level 2',
+    'Level 3',
+    'Early AGI',
+    'Advanced AGI',
+    'Sentient AGI'
+  ];
+
+  
+  // If role is in the list, return it, otherwise return the default
+  return agiLevels.includes(roleLevel) ? roleLevel : 'Sentient AGI';
 };
+
+// const getTrackLevel = (track) => {
+//   const tracks = [
+//     'Builder',
+//     'Educator',
+//     'Helper',
+//     'Artist'
+//   ];
+
+//   return tracks.includes(track) ? track : 'Builder';
+// };
+  
 
 const getRoleImage = (role) => {
   const roleImages = {
@@ -48,9 +63,10 @@ const getRoleDescription = (role) => {
   return descriptions[role?.toLowerCase()] || 'Contributing to the future of AGI';
 };
 
-export default function NeonCard({ name, imageUrl, role = 'Level 1', track = 'Builder' }) {
-  const agiLevel = getAgiLevel(role);
+export default function NeonCard({ name, imageUrl, roleLevel = 'Level 1', track = 'Builder' }) {
+  const agiLevel = getAgiLevel(roleLevel);
   const roleImage = getRoleImage(track.toLowerCase());
+ 
   const roleDescription = getRoleDescription(track.toLowerCase());
   
   return (
@@ -95,7 +111,7 @@ export default function NeonCard({ name, imageUrl, role = 'Level 1', track = 'Bu
             <div className='w-16 h-16 flex items-center justify-center'>
               <img 
                 src={roleImage} 
-                alt={role} 
+                alt={roleLevel} 
                 className="w-12 h-12 object-contain" 
               />
             </div>
@@ -105,8 +121,8 @@ export default function NeonCard({ name, imageUrl, role = 'Level 1', track = 'Bu
           <div>
             <h2 className="text-white font-bold text-lg">
               <span className="inline-flex items-center">
-                {role.charAt(0).toUpperCase() + role.slice(1)} {' -'}
-                <span className={`${getAgiGradient(agiLevel)} bg-clip-text text-transparent ml-1`}>
+                {track} {' - '}
+                <span className={`${getAgiGradient(agiLevel)} bg-clip-text text-transparent`}>
                   {agiLevel}
                 </span>
               </span>
