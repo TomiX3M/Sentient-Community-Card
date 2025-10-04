@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Upload, RotateCcw, Download, ChevronDown, User, Briefcase, Image, Book, X, Check, ExternalLink } from 'lucide-react';
-import Sparkles from './components/Sparkles';
+import Sparkles from './Sparkles';
 import CardPreview from './CardPreview';
+import { toPng } from 'html-to-image';
+
 
 
 const SentientCardCreator = () => {
@@ -9,7 +11,6 @@ const SentientCardCreator = () => {
     name: '',
     role: 'Level 1',
     track: 'Builder',
-    templateColor: 'White',
     artwork: null
   });
 
@@ -18,6 +19,7 @@ const SentientCardCreator = () => {
   const [canDownload, setCanDownload] = useState(false);
   const [bgShade, setBgShade] = useState(0);
   const fileInputRef = useRef(null);
+  const cardRef = useRef();
 
   // Background color animation
   useEffect(() => {
@@ -98,23 +100,72 @@ const SentientCardCreator = () => {
     }
   };
 
-  const handleDownloadClick = () => {
-    // Show the follow modal when download is clicked
-    setShowFollowModal(true);
+  const [errors, setErrors] = useState({});
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.name.trim()) {
+      newErrors.name = 'Name is required';
+    }
+    if (!formData.artwork) {
+      newErrors.artwork = 'Artwork is required';
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
-  const handleDownload = () => {
-    if (canDownload) {
-      // Your download logic here
-      alert('🎉 Download started! Thank you for your support!');
+  const handleDownloadClick = (e) => {
+    e.preventDefault();
+    if (validateForm()) {
+      setShowFollowModal(true);
+    }
+  };
+
+  const handleDownload = async () => {
+    if (!canDownload || !cardRef.current) return;
+
+    try {
+
+
+
+      // Convert the card to an image using html-to-image
+      const dataUrl = await toPng(cardRef.current, {
+        pixelRatio: 1,
+        backgroundColor: "#0d0d0d",
+        cacheBust: true, // Bypass cache
+        includeQueryParams: true, 
+        width: 800, // Add explicit width
+        height: 1000, // A// Include any query parameters in image URLs
+      });
+
+      // Create a download link
+      const link = document.createElement('a');
+      const fileName = `sentient-card-${formData.name ? formData.name.replace(/\s+/g, '-').toLowerCase() : 'my-card'}.png`;
+
+      link.download = fileName;
+      link.href = dataUrl;
+
+      // Append to body, trigger click, and remove
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // Revoke the object URL to free up memory
+      setTimeout(() => URL.revokeObjectURL(link.href), 100);
+
+      // Close the modal and reset state
       setShowFollowModal(false);
-      setCanDownload(false); // Reset for next time
+      setCanDownload(false);
+
+    } catch (error) {
+      console.error('Error generating image:', error);
+      alert('Error generating the card. Please try again.');
     }
   };
 
   const handleTwitterRedirect = () => {
     // Open Twitter in a new tab
-    window.open('https://twitter.com/sentient', '_blank');
+    window.open('https://x.com/Cryptee03', '_blank');
     // Enable download button after a short delay
     setCanDownload(true);
   };
@@ -145,8 +196,8 @@ const SentientCardCreator = () => {
             </div>
           </Sparkles>
           <div>
-            <h1 className="text-black text-xl font-semibold">Sentient Role Cards</h1>
-            <p className="text-gray-600 text-sm">Create your own role cards</p>
+            <h1 className="text-black text-xl font-semibold">Sentient Community Cards</h1>
+            <p className="text-gray-600 text-sm">Create community role cards</p>
           </div>
         </div>
       </header>
@@ -165,13 +216,22 @@ const SentientCardCreator = () => {
                   <User className="w-5 h-5 text-pink-500" />
                   <h3 className="text-gray-800 font-medium">Your Name</h3>
                 </div>
-                <input
-                  type="text"
-                  value={formData.name}
-                  onChange={(e) => handleInputChange('name', e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
-                  placeholder="Enter your name"
-                />
+                <div>
+                  <input
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) => {
+                      handleInputChange('name', e.target.value);
+                      if (errors.name) {
+                        setErrors(prev => ({ ...prev, name: '' }));
+                      }
+                    }}
+                    className={`w-full px-4 py-2 border ${errors.name ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent`}
+                    placeholder="Enter your name"
+                    required
+                  />
+                  {errors.name && <p className="mt-1 text-sm text-red-500">{errors.name}</p>}
+                </div>
               </div>
 
               {/* Track Dropdown */}
@@ -220,15 +280,18 @@ const SentientCardCreator = () => {
 
               {/* Upload Artwork */}
               <div className="bg-white rounded-xl p-6 border border-white/10 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-                <div className="flex items-center space-x-3 mb-4">
-                  <Image className="w-5 h-5 text-pink-400" />
-                  <h3 className="text-white font-medium">Upload Profile Image</h3>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center space-x-3">
+                    <Image className="w-5 h-5 text-pink-400" />
+                    <h3 className="text-gray-800 font-medium">Upload Profile Image</h3>
+                  </div>
+                  {errors.artwork && <p className="text-sm text-red-500">{errors.artwork}</p>}
                 </div>
 
                 <div
                   className={`relative border-2 border-dashed rounded-xl p-8 text-center transition-colors ${dragActive
-                      ? 'border-pink-500 bg-pink-500'
-                      : 'border-white/20 hover:border-white/40'
+                    ? 'border-pink-500 bg-pink-500'
+                    : 'border-pink/20 hover:border-white/40'
                     }`}
                   onDragEnter={handleDrag}
                   onDragLeave={handleDrag}
@@ -261,18 +324,29 @@ const SentientCardCreator = () => {
                           <Upload className="w-5 h-5 text-pink-400" />
                         </div>
                         <div className="text-center">
-                          <p className="text-sm text-gray-300">
-                            <span className="font-medium text-pink-400">Click to upload</span> or drag and drop
+                          <p className={`text-sm ${errors.artwork ? 'text-red-500' : 'text-gray-300'}`}>
+                            <span className={`font-medium ${errors.artwork ? 'text-red-500' : 'text-pink-400'}`}>
+                              {errors.artwork ? 'Artwork is required - ' : 'Click to upload'}
+                            </span>
+                            {!errors.artwork && 'or drag and drop'}
                           </p>
-                          <p className="text-xs text-gray-400">PNG, JPG, GIF (max. 5MB)</p>
+                          <p className={`text-xs ${errors.artwork ? 'text-red-400' : 'text-gray-400'}`}>
+                            {errors.artwork ? 'Please upload an image to continue' : 'PNG, JPG, GIF (max. 5MB)'}
+                          </p>
                         </div>
                       </div>
                       <input
                         type="file"
                         ref={fileInputRef}
-                        onChange={handleFileSelect}
+                        onChange={(e) => {
+                          handleFileSelect(e);
+                          if (errors.artwork) {
+                            setErrors(prev => ({ ...prev, artwork: '' }));
+                          }
+                        }}
                         accept="image/*"
                         className="hidden"
+                        required
                       />
                     </div>
                   )}
@@ -302,17 +376,15 @@ const SentientCardCreator = () => {
             <div className="hidden lg:flex items-top justify-center p-2">
 
               <div className="hidden lg:block lg:col-span-1">
-                <CardPreview formData={formData} />
+                <CardPreview ref={cardRef} formData={formData} />
               </div>
             </div>
 
           </div>
 
-
-
           {/* Show preview at bottom on mobile */}
           <div className="lg:hidden mt-8">
-            <CardPreview formData={formData} />
+            <CardPreview ref={cardRef} formData={formData} />
           </div>
         </div>
       </main>
@@ -362,7 +434,7 @@ const SentientCardCreator = () => {
                   className="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-pink-600 hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
                 >
                   <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15 0 1.49.75 2.81 1.91 3.56-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07 4.28 4.28 0 0 0 4 2.98 8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21 16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56.84-.6 1.56-1.36 2.14-2.23z"/>
+                    <path d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15 0 1.49.75 2.81 1.91 3.56-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07 4.28 4.28 0 0 0 4 2.98 8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21 16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56.84-.6 1.56-1.36 2.14-2.23z" />
                   </svg>
                   Follow on Twitter
                 </button>
@@ -385,15 +457,14 @@ const SentientCardCreator = () => {
       {/* Footer */}
       <footer className="bg-white border-t border-gray-200 py-6">
         <div className="max-w-7xl mx-auto px-6 text-center">
-          <p className="text-gray-600 text-sm">
-            {new Date().getFullYear()} Sentient Role Cards. All rights reserved. |
+          <p className="text-gray-600 text-sl">
+            Crafted with <span className="text-pink-500">❤️ </span> by
             <a
-              href="https://sentient.com"
+              href="https://x.com/Cryptee03"
               target="_blank"
               rel="noopener noreferrer"
               className="text-pink-500 hover:text-pink-600 font-medium transition-colors"
-            >
-              Visit Sentient Website
+            > Cryptee
             </a>
           </p>
         </div>

@@ -1,9 +1,10 @@
-import sentientImage from './assets/sentient.png';
-import builderImage from './assets/builder.png';
-import educatorImage from './assets/educator.png';
-import helperImage from './assets/helper.png';
-import artistImage from './assets/artist.png';
-import sentientText from './assets/sentient_text.png';
+import sentientImage from '../assets/sentient.png';
+import builderImage from '../assets/builder.png';
+import educatorImage from '../assets/educator.png';
+import helperImage from '../assets/helper.png';
+import artistImage from '../assets/artist.png';
+import sentientText from '../assets/sentient_text.png';
+import React from 'react';
 
 const getAgiGradient = (agiLevel) => {
   const gradients = {
@@ -12,7 +13,6 @@ const getAgiGradient = (agiLevel) => {
     'Sentient AGI': 'bg-gradient-to-r from-yellow-300 to-amber-500',
     'Level 1': 'bg-gradient-to-r from-gray-200 to-white',
     'Level 2': 'bg-gradient-to-r from-gray-300 via-white to-gray-200',
-    'Level 3': 'bg-gradient-to-r from-gray-400 via-white to-gray-300',
   };
   return gradients[agiLevel] || 'bg-gradient-to-r from-gray-400 to-gray-600';
 };
@@ -27,23 +27,23 @@ const getAgiLevel = (roleLevel) => {
     'Sentient AGI'
   ];
 
-  
-  // If role is in the list, return it, otherwise return the default
-  return agiLevels.includes(roleLevel) ? roleLevel : 'Sentient AGI';
+  // Check if roleLevel is a number (1-6)
+  const levelIndex = parseInt(roleLevel) - 1;
+  if (!isNaN(levelIndex) && levelIndex >= 0 && levelIndex < agiLevels.length) {
+    return agiLevels[levelIndex];
+  }
+
+  // Check if roleLevel is a direct string match
+  const trimmedLevel = roleLevel.trim();
+  for (const level of agiLevels) {
+    if (level === trimmedLevel) {
+      return level;
+    }
+  }
+
+  // Default to first level if no match found
+  return agiLevels[0];
 };
-
-// const getTrackLevel = (track) => {
-//   const tracks = [
-//     'Builder',
-//     'Educator',
-//     'Helper',
-//     'Artist'
-//   ];
-
-//   return tracks.includes(track) ? track : 'Builder';
-// };
-  
-
 const getRoleImage = (role) => {
   const roleImages = {
     'builder': builderImage,
@@ -58,27 +58,32 @@ const getRoleDescription = (role) => {
   const descriptions = {
     'builder': 'Building the future of decentralized technology',
     'educator': 'Educating the next generation of Web3 innovators',
-    'artist': 'Creating immersive experiences through digital art'
+    'artist': 'Creating immersive experiences through digital art',
+    'helper': 'Assisting in the development of AI and blockchain technologies',
+
   };
   return descriptions[role?.toLowerCase()] || 'Contributing to the future of AGI';
 };
 
-export default function NeonCard({ name, imageUrl, roleLevel = 'Level 1', track = 'Builder' }) {
+const NeonCard = React.forwardRef(({ name, imageUrl, roleLevel = 'Level 1', track = 'Builder' }, ref) => {
   const agiLevel = getAgiLevel(roleLevel);
   const roleImage = getRoleImage(track.toLowerCase());
- 
+
   const roleDescription = getRoleDescription(track.toLowerCase());
-  
+
   return (
+    <div ref={ref} className="w-[450px] h-[700px] flex flex-col items-center justify-center 
+    bg-gradient-to-br from-black via-gray-900 to-black 
+    rounded-3xl shadow-2xl">
     <div
-      className="relative w-[350px] h-[500px] p-[12px] rounded-3xl
+      className="relative w-[350px] h-[500px] p-[15px] rounded-3xl
                  bg-[repeating-linear-gradient(135deg,#f472b6_0%,#d946ef_20%,#be123c_40%,#f472b6_60%)]
                  shadow-[0_0_50px_rgba(236,72,153,0.6),0_0_90px_rgba(217,70,239,0.5),0_0_150px_rgba(190,18,60,0.4)]"
     >
       {/* Inner gradient layer */}
       <div className="h-full w-full rounded-2x1 bg-gradient-to-t from-black via-pink-700  to-black
-      animate-gradient-vert 
-      p-4 rounded-xl shadow-lg pt-4 pb-6 px-6 text-white">
+     
+      p-3 rounded-xl shadow-lg pt-4 pb-6 px-6 text-white">
         <div className="relative mb-4">
           <div className="relative z-10 flex items-center justify-between gap-3 text-left text-xl font-semibold text-white px-4 py-3">
             {name}
@@ -89,30 +94,30 @@ export default function NeonCard({ name, imageUrl, roleLevel = 'Level 1', track 
             />
           </div>
           {/* Gradient border container */}
-          <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-pink-500 via-fuchsia-500 to-rose-500 p-[1px]">
+          <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-pink-500 via-fuchsia-500 to-rose-500 p-[2px]">
             <div className="h-full w-full rounded-lg bg-gradient-to-r from-fuchsia-700/70 via-black/90 to-black/90 p-2">
               <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-pink-500/10 via-transparent to-pink-500/5 pointer-events-none" />
             </div>
           </div>
         </div>
-        <div className="relative p-[3px] h-[250px] w-[250px] mx-auto rounded-lg bg-gradient-to-br from-pink-500 via-fuchsia-500 to-rose-300 ">
-
-          <img
-            src={imageUrl}
-            alt="profile"
-            className=" aspect-square object-cover rounded-1xl border-4 border-transparent"
-          />
-
+        <div className="relative p-[8px] h-[250px] w-[270px] mx-auto rounded-lg bg-gradient-to-br from-pink-500 via-fuchsia-500 to-rose-300">
+          <div className="w-full h-full overflow-hidden rounded-lg">
+            <img
+              src={imageUrl}
+              alt="profile"
+              className="w-full h-full object-cover"
+            />
+          </div>
         </div>
-      
+
         <div className="flex items-center gap-4 p-2 shadow-lg w-fit -ml-2 mt-3">
           <div className="flex items-center justify-center  bg-gradient-to-tl from-rose-400 via-pink-700 to-rose-400 rounded-lg w-15 h-15">
 
             <div className='w-16 h-16 flex items-center justify-center'>
-              <img 
-                src={roleImage} 
-                alt={roleLevel} 
-                className="w-12 h-12 object-contain" 
+              <img
+                src={roleImage}
+                alt={roleLevel}
+                className="w-12 h-12 object-contain"
               />
             </div>
 
@@ -121,7 +126,7 @@ export default function NeonCard({ name, imageUrl, roleLevel = 'Level 1', track 
           <div>
             <h2 className="text-white font-bold text-lg">
               <span className="inline-flex items-center">
-                {track} {' - '}
+                {track} -
                 <span className={`${getAgiGradient(agiLevel)} bg-clip-text text-transparent`}>
                   {agiLevel}
                 </span>
@@ -142,5 +147,9 @@ export default function NeonCard({ name, imageUrl, roleLevel = 'Level 1', track 
         </div>
       </div>
     </div>
+    </div>
   );
-}
+});
+
+
+export default NeonCard;
