@@ -176,9 +176,9 @@ const SentientCardCreator = () => {
         <Sparkles
           useImage={true}
           imageUrl="/logo_transparent.png"
-          sparkleCount={45}
+          sparkleCount={30}
           minSize={15}
-          maxSize={45}
+          maxSize={40}
           className="w-full h-full"
         />
       </div>
@@ -186,7 +186,13 @@ const SentientCardCreator = () => {
       {/* Header with sparkles */}
       <header className="bg-white border-b border-gray-200 px-6 py-4 shadow-sm relative z-10">
         <div className="flex items-center space-x-3">
-          <Sparkles useImage={false}>
+          <Sparkles useImage={false}
+           color="pink"  // 'pink', 'blue', 'gold', or 'purple'
+           intensity={0.5} // Adjust the overall effect intensity
+           sparkleCount={5} // Number of sparkles
+           minSize={5}   // Minimum sparkle size
+           maxSize={20} 
+          >
             <div className="w-8 h-8 bg-pink-400 rounded-lg flex items-center justify-center relative z-10">
               <img
                 src="/logo_transparent.png"
@@ -196,7 +202,7 @@ const SentientCardCreator = () => {
             </div>
           </Sparkles>
           <div>
-            <h1 className="text-black text-xl font-semibold">Sentient Community Cards</h1>
+            <h1 className="text-black text-xl font-semibold">Sentient Community Card</h1>
             <p className="text-gray-600 text-sm">Create community role cards</p>
           </div>
         </div>
@@ -455,16 +461,17 @@ const SentientCardCreator = () => {
       )}
 
       {/* Footer */}
-      <footer className="bg-white border-t border-gray-200 py-6">
+      <footer className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-gray-200 py-4 shadow-lg z-50">
         <div className="max-w-7xl mx-auto px-6 text-center">
-          <p className="text-gray-600 text-sl">
-            Crafted with <span className="text-pink-500">❤️ </span> by
+          <p className="text-gray-600 text-lg">
+            Crafted with <span className="text-pink-500">❤️</span> by
             <a
               href="https://x.com/Cryptee03"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-pink-500 hover:text-pink-600 font-medium transition-colors"
-            > Cryptee
+              className="text-pink-500 hover:text-pink-600 font-medium transition-colors ml-1"
+            >
+              Cryptee
             </a>
           </p>
         </div>

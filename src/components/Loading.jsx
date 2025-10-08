@@ -39,7 +39,7 @@ const Loading = () => {
       
       {/* Footer */}
       <p className="mt-8 text-sm text-pink-400">
-        Made with <span className="text-pink-500">❤️</span> by Sentient Community
+        Made with <span className="text-pink-500">❤️</span> for the Sentient Community
       </p>
     </div>
   );

@@ -56,10 +56,10 @@ const getRoleImage = (role) => {
 
 const getRoleDescription = (role) => {
   const descriptions = {
-    'builder': 'Building the future of decentralized technology',
-    'educator': 'Educating the next generation of Web3 innovators',
-    'artist': 'Creating immersive experiences through digital art',
-    'helper': 'Assisting in the development of AI and blockchain technologies',
+    'builder': 'Building the future - creating tools and apps that power Sentient',
+    'educator': 'Teaching others - crafting guides that onboard the next wave',
+    'artist': 'Bringing ideas to life - designing the visual identity of Sentient',
+    'helper': 'The backbone - supporting members and strengthening the community',
 
   };
   return descriptions[role?.toLowerCase()] || 'Contributing to the future of AGI';
@@ -77,7 +77,7 @@ const NeonCard = React.forwardRef(({ name, imageUrl, roleLevel = 'Level 1', trac
     rounded-3xl shadow-2xl">
     <div
       className="relative w-[350px] h-[500px] p-[15px] rounded-3xl
-                 bg-[repeating-linear-gradient(135deg,#f472b6_0%,#d946ef_20%,#be123c_40%,#f472b6_60%)]
+                 bg-[repeating-linear-gradient(110deg,#f472b6_0%,#d946ef_20%,#be123c_40%,#f472b6_60%)]
                  shadow-[0_0_50px_rgba(236,72,153,0.6),0_0_90px_rgba(217,70,239,0.5),0_0_150px_rgba(190,18,60,0.4)]"
     >
       {/* Inner gradient layer */}
@@ -110,8 +110,8 @@ const NeonCard = React.forwardRef(({ name, imageUrl, roleLevel = 'Level 1', trac
           </div>
         </div>
 
-        <div className="flex items-center gap-4 p-2 shadow-lg w-fit -ml-2 mt-3">
-          <div className="flex items-center justify-center  bg-gradient-to-tl from-rose-400 via-pink-700 to-rose-400 rounded-lg w-15 h-15">
+        <div className="flex items-center gap-4 p-2 shadow-lg w-fit -ml-2 mt-1">
+          <div className="flex items-center justify-center  bg-gradient-to-tl from-purple-400 via-pink-700 to-rose-200 rounded-lg w-15 h-15">
 
             <div className='w-16 h-16 flex items-center justify-center'>
               <img
@@ -125,8 +125,8 @@ const NeonCard = React.forwardRef(({ name, imageUrl, roleLevel = 'Level 1', trac
           </div>
           <div>
             <h2 className="text-white font-bold text-lg">
-              <span className="inline-flex items-center">
-                {track} -
+              <span className={`inline-flex items-center ${track === 'Educator' ? 'text-base' : 'text-lg'}`}>
+                {track} - 
                 <span className={`${getAgiGradient(agiLevel)} bg-clip-text text-transparent`}>
                   {agiLevel}
                 </span>
