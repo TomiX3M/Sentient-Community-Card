@@ -359,7 +359,7 @@ const SentientCardCreator = () => {
                 </div>
               </div>
               {/* Action Buttons */}
-              <div className="flex space-x-4 mt-6">
+              <div className="flex space-x-4 mt-6 pb-8">
                 <button
                   onClick={handleReset}
                   className="flex items-center space-x-2 px-6 py-3 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors"
@@ -373,7 +373,7 @@ const SentientCardCreator = () => {
                   className="flex-1 flex items-center justify-center space-x-2 px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white rounded-lg transition-all shadow-lg"
                 >
                   <Download className="w-4 h-4" />
-                  <span>Download PNG</span>
+                  <span>Download Card</span>
                 </button>
               </div>
             </div>
@@ -463,7 +463,7 @@ const SentientCardCreator = () => {
       {/* Footer */}
       <footer className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-gray-200 py-4 shadow-lg z-50">
         <div className="max-w-7xl mx-auto px-6 text-center">
-          <p className="text-gray-600 text-lg">
+          <p className="text-gray-600 text-sm">
             Crafted with <span className="text-pink-500">❤️</span> by
             <a
               href="https://x.com/Cryptee03"

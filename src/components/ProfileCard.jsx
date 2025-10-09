@@ -73,12 +73,11 @@ const NeonCard = React.forwardRef(({ name, imageUrl, roleLevel = 'Level 1', trac
 
   return (
     <div ref={ref} className="w-[450px] h-[700px] flex flex-col items-center justify-center 
-    bg-gradient-to-br from-black via-gray-900 to-black 
-    rounded-3xl shadow-2xl">
+bg-[linear-gradient(180deg,#000000,#0d0221,#1a0b2e)] rounded-3xl shadow-2xl">
     <div
       className="relative w-[350px] h-[500px] p-[15px] rounded-3xl
                  bg-[repeating-linear-gradient(110deg,#f472b6_0%,#d946ef_20%,#be123c_40%,#f472b6_60%)]
-                 shadow-[0_0_50px_rgba(236,72,153,0.6),0_0_90px_rgba(217,70,239,0.5),0_0_150px_rgba(190,18,60,0.4)]"
+                 shadow-[10px_0_50px_rgba(236,72,153,0.6),10px_0_90px_rgba(217,70,239,0.5),10px_0_150px_rgba(190,18,60,0.4)]"
     >
       {/* Inner gradient layer */}
       <div className="h-full w-full rounded-2x1 bg-gradient-to-t from-black via-pink-700  to-black
